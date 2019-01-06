@@ -67,6 +67,7 @@ public class RegistarationController extends ParentController{
 			HttpServletResponse response){
 		System.out.println(username+" "+password+" "+lastName+" "+firstName);
 		
+		MongoClient mongo =null;
 		try {
 			if(isExistUser(username))
 			{
@@ -75,7 +76,7 @@ public class RegistarationController extends ParentController{
 			}
 			else
 			{
-			      MongoClient mongo = new MongoClient( "localhost" , 27017 ); 
+			      mongo = new MongoClient( "localhost" , 27017 ); 
 			      MongoDatabase database = mongo.getDatabase("InbalAndAsaf"); 
 			      MongoCollection<Document> collection = database.getCollection("USERS"); 
 			      Document document = new Document() 
@@ -85,7 +86,6 @@ public class RegistarationController extends ParentController{
 			      .append("LAST_NAME", lastName)
 			      .append("REGISTRATION_DATE", (new Timestamp(System.currentTimeMillis())));
 			      collection.insertOne(document); 
-				  mongo.close();
 
 				HttpStatus status = HttpStatus.OK;
 				response.setStatus(status.value());
@@ -95,6 +95,12 @@ public class RegistarationController extends ParentController{
 			HttpStatus status = HttpStatus.CONFLICT;
 			response.setStatus(status.value());
 			e.printStackTrace();
+		}
+		finally{
+			if(mongo!=null)
+				{
+				mongo.close();
+				}
 		}
 
 	}
@@ -123,11 +129,10 @@ public class RegistarationController extends ParentController{
 	    if (it.hasNext()) { 
 	    	result = true;
 	     }
-	     mongo.close();
 		}
 		catch(Exception e)
 		{
-			throw e;
+			 e.printStackTrace();
 		}
 		finally{
 			if(mongo != null)

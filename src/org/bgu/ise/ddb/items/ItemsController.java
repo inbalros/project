@@ -128,7 +128,6 @@ public class ItemsController extends ParentController {
 	 */
 	@RequestMapping(value = "fill_media_items", method={RequestMethod.GET})
 	public void fillMediaItems(HttpServletResponse response){
-		System.out.println("was here");
 		//fileToOracleDataBase();
 		PreparedStatement ps = null;
 		MongoClient mongo  = null;
@@ -211,7 +210,7 @@ public class ItemsController extends ParentController {
                 {
                 	 Document document = new Document() 
          			.append("TITLE", movie[0]) 
-         			.append("PROD_YEAR", movie[1]);
+         			.append("PROD_YEAR", Integer.parseInt(movie[1]));
          			collection.insertOne(document); 
                 }
               }
